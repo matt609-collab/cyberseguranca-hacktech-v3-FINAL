@@ -1,0 +1,6 @@
+{
+  "name": "VAI PITANGA - Monitoramento e Segurança por Drones",
+  "description": "Centro de Comando e Sistema de Monitoramento e Segurança Autônomo com Drones de Patrulhamento em Pitanga - PR.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: #12161c;
+    color: #ecf0f1;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+/* Custom Tactical Tooltip for Leaflet */
+.tactical-tooltip {
+  background: #111822 !important;
+  color: #ecf0f1 !important;
+  border: 1px solid #f1c40f !important;
+  border-radius: 6px !important;
+  padding: 6px 10px !important;
+  font-family: 'Segoe UI', monospace !important;
+  font-size: 11px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7) !important;
+}
+
+.tactical-tooltip::before {
+  border-top-color: #f1c40f !important;
+}
+
+/* Leaflet Container Styling */
+.leaflet-container {
+  background-color: #0b1016 !important;
+  font-family: inherit;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #151d28;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2c3e50;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #f1c40f;
+}
+
+@keyframes pulse-red {
+  0%, 100% {
+    box-shadow: 0 0 5px #e74c3c;
+  }
+  50% {
+    box-shadow: 0 0 20px #e74c3c;
+  }
+}
+
+.animate-pulse-red {
+  animation: pulse-red 1.5s infinite;
+}
+
+/* Indicador de foco amarelo destacado para navegação por TAB */
+*:focus-visible {
+  outline: 3px solid #f1c40f !important;
+  outline-offset: 3px !important;
+}
+
+/* Modo de Alto Contraste para baixa visão e daltonismo */
+body.modo-alto-contraste {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+body.modo-alto-contraste * {
+  background-color: transparent !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+body.modo-alto-contraste button, 
+body.modo-alto-contraste a {
+  outline: 2px solid #ffff00 !important;
+  color: #ffff00 !important;
+  font-weight: bold !important;
+}
