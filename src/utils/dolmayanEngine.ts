@@ -80,39 +80,35 @@ export function generateDolmayanResponse(userPrompt: string): string {
     query.includes('rural') ||
     query.includes('municipio') ||
     query.includes('município') ||
+    query.includes('anac') ||
+    query.includes('anvac') ||
     query.includes('privado')
   ) {
-    if (query.includes('rural')) {
+    if (query.includes('municipio') || query.includes('município') || query.includes('cidade') || query.includes('prefeitura') || query.includes('anac') || query.includes('anvac')) {
       return (
-        "🌾 **Planos para Área Rural de Pitanga:**\n\n" +
-        "• **Rural Básico:** R$ 2.900/mês — Cobertura de até 1.000.000 m², 2 Drones, link 5G e alertas térmicos.\n" +
-        "• **Rural Plus (Mais Popular):** R$ 3.900/mês — Até 2.000.000 m², 3 Drones, link híbrido 5G/Satélite e IA preditiva.\n" +
-        "• **Rural Premium:** R$ 5.500/mês — Até 5.000.000 m², 4 Drones, rádio + satélite dedicado e suporte prioritário 24/7."
-      );
-    }
-    if (query.includes('municipio') || query.includes('município') || query.includes('cidade') || query.includes('prefeitura')) {
-      return (
-        "🏙️ **Planos Municipais (Cobertura Pública):**\n\n" +
-        "• **Município Essencial:** R$ 39.900/mês — Cobertura urbana com 16 Drones e integração com Bombeiros/Polícia.\n" +
-        "• **Município Completo:** R$ 54.900/mês — Cobertura urbana + periurbana com 24 Drones e relatórios de IA diários.\n" +
-        "• **Município Avançado:** R$ 69.900/mês — Cobertura territorial total com 32 Drones e suporte VIP contínuo."
-      );
-    }
-    if (query.includes('privad') || query.includes('empresa') || query.includes('casa') || query.includes('condominio')) {
-      return (
-        "🏢 **Planos para Área Privada (Comércio/Residencial):**\n\n" +
-        "• **Privado Básico:** R$ 390/mês — Até 50.000 m², 2 Drones e transmissão Full HD ao vivo.\n" +
-        "• **Privado Plus:** R$ 690/mês — Até 100.000 m², 3 Drones, transmissão térmica + HD e gravação em nuvem.\n" +
-        "• **Privado Premium:** R$ 990/mês — Até 200.000 m², 4 Drones, visão noturna IR e rondas agendadas."
+        "🏛️ **Plano Municipal (Eliminado do Projeto):**\n\n" +
+        "O plano municipal foi **completamente eliminado**. A equipe EPT optou por essa pivotagem porque não possuímos conhecimento legislatório aprofundado sobre contratações públicas e não dispomos de licenças regulatórias da ANAC (como certificações BVLOS para voos sobre áreas urbanas densas).\n\n" +
+        "Por isso, nosso **foco momentâneo e estratégico é 100% voltado ao Plano Rural**!"
       );
     }
 
+    if (query.includes('privad') || query.includes('urbano') || query.includes('condominio')) {
+      return (
+        "🏢 **Planos para Área Privada / Urbana (Futuramente):**\n\n" +
+        "Este módulo encontra-se **omitido e sem valores definidos**, com status **'Futuramente'**.\n" +
+        "O atendimento a condomínios fechados e empresas urbanas será implementado futuramente, assim que o projeto expandir e consolidar as bases na área rural."
+      );
+    }
+
+    // Explicação do Plano Rural e Estimativa
     return (
-      "💳 **Tabela Resumida de Planos da VAI PITANGA:**\n\n" +
-      "• **Área Rural:** Planos de R$ 2.900 a R$ 5.500/mês (atendem de 1 a 5 milhões de m² com telemetria 5G/Satélite).\n" +
-      "• **Área Privada:** Planos a partir de R$ 390 a R$ 990/mês para indústrias, comércios e propriedades.\n" +
-      "• **Município Inteiro:** Planos municipais integrados de R$ 39.900 a R$ 69.900/mês.\n\n" +
-      "Você pode consultar e migrar seu plano diretamente na página **'PLANOS E ASSINATURA'** do sistema!"
+      "🌾 **Nosso Foco Atual: Plano e Estimativa Rural**\n\n" +
+      "Os valores comerciais fixos foram substituídos por um modelo de **estimativa técnica dimensionada** para fazendas e lavouras:\n\n" +
+      "• **Proporção:** 1 profissional técnico operador para cada 4 drones alocados (garantindo resposta e segurança).\n" +
+      "• **Conectividade Wi-Fi:** Se a sede da fazenda tiver Wi-Fi, o serviço é isento. Caso contrário, incide uma taxa extra de link satélite/rádio 5.8 GHz.\n" +
+      "• **Bases de Carregamento Solar:** Instalação física de docas autônomas Resun 100W + controladores MPPT na propriedade.\n" +
+      "• **Manutenção Periódica:** Taxa mensal para revisão de motores, troca de baterias LiFePO4 e calibração das câmeras térmicas FLIR.\n\n" +
+      "Você pode simular os custos exatos da sua propriedade no **Simulador Rural** na página de Planos!"
     );
   }
 
@@ -219,35 +215,34 @@ export function generateDolmayanResponse(userPrompt: string): string {
     );
   }
 
-  // 9. Denúncia Física e Cobertura Municipal
+  // 9. Denúncia Física em Propriedades Rurais
   if (
     query.includes('denúncia') ||
     query.includes('denuncia') ||
     query.includes('denúncia física') ||
     query.includes('denuncia fisica') ||
-    query.includes('foz') ||
-    query.includes('foz do iguaçu') ||
     query.includes('cobertura') ||
-    query.includes('municipio contratado') ||
-    query.includes('município contratado')
+    query.includes('fazenda') ||
+    query.includes('gado') ||
+    query.includes('trator')
   ) {
     return (
-      "🚨 **Módulo de Denúncia Física Cidadã:**\n\n" +
-      "O botão **'🚨 DENÚNCIA FÍSICA'** permite que usuários logados comuniquem flagrantes em tempo real (como furtos de bicicletas, invasões ou queimadas).\n\n" +
-      "**Regras de Disponibilidade (O Tcham):**\n" +
-      "• **Municípios com Convênio Integral:** Cidadãos em **Pitanga** e **Foz do Iguaçu** possuem cobertura total automática! A mensagem festiva *'Uhuul! Seu município já nos contratou e você pode usar nosso sistema de denúncia!'* é exibida.\n" +
-      "• **Área Rural ou Urbana Particular:** Disponível para usuários com propriedades cadastradas no plano Rural ou Urbano.\n" +
-      "• **Despacho Imediato:** O sistema calcula a distância de todos os drones em voo, seleciona o **drone mais próximo** e re-roteia sua trajetória de patrulha para sobrevoar o local em segundos!"
+      "🚨 **Módulo de Denúncia Física em Propriedades Rurais:**\n\n" +
+      "O botão **'🚨 DENÚNCIA FÍSICA'** permite que produtores rurais e operadores autenticados comuniquem ocorrências no campo (como furto de tratores/maquinários, abigeato de gado, invasões de galpão ou focos de queimada).\n\n" +
+      "**Funcionamento do Despacho Rural:**\n" +
+      "• **Foco Rural:** Atende fazendas cadastradas na malha de Pitanga e região.\n" +
+      "• **Despacho Imediato:** O sistema localiza o drone solar com menor tempo de voo (ex: VAI-01), calcula a rota geodésica e envia o drone em velocidade de interceptação (52 km/h) para realizar varredura visual e térmica com câmera FLIR sobre o talhão indicado!"
     );
   }
 
   // 10. Resposta Geral / Fallback Inteligente
   return (
     `Entendido! Em relação à sua dúvida sobre "${userPrompt.slice(0, 45)}":\n\n` +
-    "O sistema **VAI PITANGA** é uma central autônoma de vigilância aérea. Posso te ajudar com detalhes sobre:\n" +
+    "O sistema **VAI PITANGA** é focado no patrulhamento aéreo de propriedades rurais. Posso te orientar sobre:\n" +
     "• **Hardware:** DJI Mini 3, painel solar Resun 100W, bateria LiFePO4 e câmeras FLIR.\n" +
-    "• **Planos:** Valores para Área Rural (R$ 2.900 a R$ 5.500), Privada (R$ 390 a R$ 990) ou Municipal.\n" +
-    "• **Operação:** Protocolo de pouso de emergência com bateria $\\le 18\\%$ e despacho de Bombeiros/Polícia.\n" +
+    "• **Modelo Rural:** Proporção de 1 profissional para 4 drones, taxa de Wi-Fi e bases solares.\n" +
+    "• **Pivotagem:** Por que o plano municipal foi cancelado (requisitos ANAC e legislação pública).\n" +
+    "• **Denúncia Rural:** Despacho autônomo do drone mais próximo para a fazenda.\n" +
     "• **Equipe EPT:** Papéis dos 6 desenvolvedores de Pitanga.\n\n" +
     "Como posso te orientar melhor?"
   );

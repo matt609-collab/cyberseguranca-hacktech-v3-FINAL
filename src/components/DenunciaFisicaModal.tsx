@@ -26,16 +26,19 @@ interface DenunciaFisicaModalProps {
   onSubmitReport: (report: PhysicalReport) => void;
 }
 
-// Municípios com convênio total contratado por padrão
-const MUNICIPIOS_CONTRATADOS = ['Pitanga', 'Foz do Iguaçu'];
+// Regiões rurais cadastradas no sistema
+const REGIOES_RURAIS_COBERTAS = [
+  'Propriedade Rural (Pitanga - Setor Rural)',
+  'Propriedade Rural (Foz do Iguaçu - Setor Rural)',
+  'Propriedade Rural Parceira (Região Central)',
+];
 
 // Coordenadas padrão por região
 const COORDENADAS_BASE: Record<string, { lat: number; lng: number }> = {
-  Pitanga: { lat: -24.7572, lng: -51.76 },
-  'Foz do Iguaçu': { lat: -25.5163, lng: -54.5854 },
-  'Área Rural (Pitanga)': { lat: -24.789, lng: -51.735 },
-  'Área Urbana Privada': { lat: -24.752, lng: -51.768 },
-  'Outro Município (Sem Cobertura)': { lat: -25.395, lng: -51.462 }, // Ex: Guarapuava
+  'Propriedade Rural (Pitanga - Setor Rural)': { lat: -24.789, lng: -51.735 },
+  'Propriedade Rural (Foz do Iguaçu - Setor Rural)': { lat: -25.531, lng: -54.562 },
+  'Propriedade Rural Parceira (Região Central)': { lat: -24.7572, lng: -51.76 },
+  'Propriedade Urbana / Outra Região (Sem Cobertura Ativa)': { lat: -25.395, lng: -51.462 },
 };
 
 // Cálculo de distância Haversine em km
@@ -58,30 +61,19 @@ export const DenunciaFisicaModal: React.FC<DenunciaFisicaModalProps> = ({
   onClose,
   onSubmitReport,
 }) => {
-  // Localização / Região selecionada (por padrão Pitanga ou detectada)
-  const [localizacao, setLocalizacao] = useState<string>('Pitanga');
-  const [endereco, setEndereco] = useState<string>('Av. Presidente Kennedy, Centro');
-  const [tipoOcorrencia, setTipoOcorrencia] = useState<string>('Furto de Bicicleta / Veículo');
+  // Localização / Região selecionada (por padrão Área Rural de Pitanga)
+  const [localizacao, setLocalizacao] = useState<string>('Propriedade Rural (Pitanga - Setor Rural)');
+  const [endereco, setEndereco] = useState<string>('Estrada Rural Linha Cantu, km 4 - Sede da Fazenda');
+  const [tipoOcorrencia, setTipoOcorrencia] = useState<string>('Furto de Maquinário / Trator');
   const [urgencia, setUrgencia] = useState<'alta' | 'media' | 'baixa'>('alta');
   const [descricao, setDescricao] = useState<string>('');
   const [isGpsLoading, setIsGpsLoading] = useState<boolean>(false);
   const [coordsCustom, setCoordsCustom] = useState<{ lat: number; lng: number } | null>(null);
 
-  // Determina se a região é elegível
-  // Elegível se:
-  // 1. Está em município integralmente contratado (Pitanga, Foz do Iguaçu) OU
-  // 2. Está na Área Rural OU
-  // 3. Está na Área Urbana
-  const isContratadoMunicipio = useMemo(() => {
-    return MUNICIPIOS_CONTRATADOS.includes(localizacao);
-  }, [localizacao]);
-
+  // Determina se a propriedade rural é elegível
   const isElegivel = useMemo(() => {
-    if (isContratadoMunicipio) return true;
-    if (localizacao === 'Área Rural (Pitanga)') return true;
-    if (localizacao === 'Área Urbana Privada') return true;
-    return false;
-  }, [isContratadoMunicipio, localizacao]);
+    return REGIOES_RURAIS_COBERTAS.includes(localizacao);
+  }, [localizacao]);
 
   // Coordenadas calculadas para o incidente
   const currentCoords = useMemo(() => {
@@ -229,30 +221,18 @@ export const DenunciaFisicaModal: React.FC<DenunciaFisicaModalProps> = ({
         {/* Content Body with Scroll */}
         <div className="p-4 overflow-y-auto space-y-4 text-xs font-sans">
 
-          {/* CELEBRATORY BANNER (O Tcham): Se município possui convênio total */}
-          {isContratadoMunicipio ? (
+          {/* BANNER DE COBERTURA RURAL */}
+          {isElegivel ? (
             <div className="bg-gradient-to-r from-emerald-950/80 via-emerald-900/60 to-emerald-950/80 border-2 border-emerald-500/70 p-3.5 rounded-lg shadow-md animate-pulse">
               <div className="flex items-start gap-2.5">
                 <Sparkles className="w-5 h-5 text-yellow-300 shrink-0 mt-0.5" />
                 <div>
                   <div className="font-bold text-white text-xs tracking-wide">
-                    🎉 Uhuul! Seu município já nos contratou e você pode usar nosso sistema de denúncia!
+                    🌾 Uhuul! Sua propriedade rural está cadastrada e conta com patrulha de drones ativa!
                   </div>
                   <p className="text-emerald-200/90 text-[11px] mt-1 leading-relaxed">
-                    O município de <strong>{localizacao}</strong> possui convênio público integral com o <strong>VAI PITANGA</strong>. Você está autenticado e apto a acionar a interceptação aérea imediata sem custos individuais.
+                    Sua fazenda ou lavoura em <strong>{localizacao}</strong> possui cobertura e bases solares integradas ao <strong>VAI PITANGA</strong>. Você está autenticado e o drone com menor tempo de voo será re-roteado em tempo real.
                   </p>
-                </div>
-              </div>
-            </div>
-          ) : isElegivel ? (
-            <div className="bg-sky-950/60 border border-sky-500/60 p-3 rounded-lg flex items-center gap-2.5 text-sky-200">
-              <ShieldCheck className="w-5 h-5 text-sky-400 shrink-0" />
-              <div>
-                <div className="font-bold text-white text-xs">
-                  🛡️ Cobertura Privada Habilitada ({localizacao})
-                </div>
-                <div className="text-[11px] text-gray-300">
-                  Propriedade com plano ativo de patrulhamento aéreo por quadrante.
                 </div>
               </div>
             </div>
@@ -262,25 +242,25 @@ export const DenunciaFisicaModal: React.FC<DenunciaFisicaModalProps> = ({
                 <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
                 <div>
                   <div className="font-bold text-white text-xs">
-                    ⚠️ Município Sem Cobertura Cadastrada
+                    ⚠️ Propriedade Sem Cobertura Rural Cadastrada
                   </div>
                   <p className="text-red-300 text-[11px] mt-1 leading-relaxed">
-                    O despacho imediato de drones opera exclusivamente em municípios contratados (como <strong>Pitanga</strong> e <strong>Foz do Iguaçu</strong>) ou em propriedades cadastradas na patrulha Rural/Urbana.
+                    O despacho aéreo opera exclusivamente para propriedades rurais integradas ao sistema. Planos municipais foram descontinuados por questões regulatórias da ANAC e legislação de segurança pública.
                   </p>
                   <div className="mt-2.5 flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => setLocalizacao('Pitanga')}
+                      onClick={() => setLocalizacao('Propriedade Rural (Pitanga - Setor Rural)')}
                       className="px-2.5 py-1 bg-yellow-500 hover:bg-yellow-400 text-black font-bold text-[11px] rounded transition-colors"
                     >
-                      Alternar para Pitanga (Contratado)
+                      Simular Fazenda em Pitanga
                     </button>
                     <button
                       type="button"
-                      onClick={() => setLocalizacao('Foz do Iguaçu')}
+                      onClick={() => setLocalizacao('Propriedade Rural (Foz do Iguaçu - Setor Rural)')}
                       className="px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white font-bold text-[11px] rounded transition-colors"
                     >
-                      Alternar para Foz do Iguaçu (Contratado)
+                      Simular Fazenda em Foz do Iguaçu
                     </button>
                   </div>
                 </div>
@@ -290,12 +270,12 @@ export const DenunciaFisicaModal: React.FC<DenunciaFisicaModalProps> = ({
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-3.5">
-            {/* Seletor de Município / Área de Cobertura */}
+            {/* Seletor de Propriedade Rural */}
             <div>
               <label className="block text-gray-300 font-bold mb-1 font-mono uppercase text-[11px] flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
-                  <Building2 className="w-3.5 h-3.5 text-[#f1c40f]" />
-                  Localização / Município do Usuário:
+                  <TreePine className="w-3.5 h-3.5 text-[#f1c40f]" />
+                  Propriedade Rural Cadastrada:
                 </span>
                 <button
                   type="button"
@@ -315,16 +295,21 @@ export const DenunciaFisicaModal: React.FC<DenunciaFisicaModalProps> = ({
                 }}
                 className="w-full py-2 px-3 bg-[#0d141e] border border-[#2c3e50] rounded-lg text-white font-medium focus:outline-none focus:border-[#f1c40f]"
               >
-                <optgroup label="🏛️ Municípios com Contrato Integral (Todos Cidadãos Cobertos)">
-                  <option value="Pitanga">Pitanga - PR (Convênio Municipal Ativo)</option>
-                  <option value="Foz do Iguaçu">Foz do Iguaçu - PR (Convênio Municipal Ativo)</option>
+                <optgroup label="🌾 Propriedades Rurais com Cobertura Ativa">
+                  <option value="Propriedade Rural (Pitanga - Setor Rural)">
+                    Fazenda / Linha Cantu (Pitanga - PR) - Cobertura Ativa
+                  </option>
+                  <option value="Propriedade Rural (Foz do Iguaçu - Setor Rural)">
+                    Propriedade Rural Agro (Foz do Iguaçu - PR) - Cobertura Ativa
+                  </option>
+                  <option value="Propriedade Rural Parceira (Região Central)">
+                    Propriedade Piloto EPT (Região Central - PR) - Cobertura Ativa
+                  </option>
                 </optgroup>
-                <optgroup label="🌾 Setores Privados Contratados">
-                  <option value="Área Rural (Pitanga)">Área Rural (Patrulha de Fazendas / Linhas Rurais)</option>
-                  <option value="Área Urbana Privada">Área Urbana (Condomínios / Comércio Monitorado)</option>
-                </optgroup>
-                <optgroup label="⚠️ Regiões Não Cobertas">
-                  <option value="Outro Município (Sem Cobertura)">Outro Município (Ainda Não Contratado)</option>
+                <optgroup label="⚠️ Regiões Não Cobertas / Fora da Malha">
+                  <option value="Propriedade Urbana / Outra Região (Sem Cobertura Ativa)">
+                    Propriedade Urbana / Sem Cadastro Rural Ativo
+                  </option>
                 </optgroup>
               </select>
             </div>
@@ -333,13 +318,13 @@ export const DenunciaFisicaModal: React.FC<DenunciaFisicaModalProps> = ({
             <div>
               <label className="block text-gray-300 font-bold mb-1 font-mono uppercase text-[11px] flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-[#f1c40f]" />
-                Endereço ou Ponto de Referência do Fato:
+                Ponto de Referência ou Talhão / Estrada Rural:
               </label>
               <input
                 type="text"
                 value={endereco}
                 onChange={(e) => setEndereco(e.target.value)}
-                placeholder="Ex: Rua Getúlio Vargas, 350 - em frente à praça"
+                placeholder="Ex: Estrada Rural Linha Cantu, km 4 - Próximo ao silo"
                 required
                 className="w-full py-2 px-3 bg-[#0d141e] border border-[#2c3e50] rounded-lg text-white font-mono text-xs focus:outline-none focus:border-[#f1c40f]"
               />
@@ -349,20 +334,21 @@ export const DenunciaFisicaModal: React.FC<DenunciaFisicaModalProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <label className="block text-gray-300 font-bold mb-1 font-mono uppercase text-[11px]">
-                  Tipo de Crime / Incidente:
+                  Tipo de Ocorrência Rural:
                 </label>
                 <select
                   value={tipoOcorrencia}
                   onChange={(e) => setTipoOcorrencia(e.target.value)}
                   className="w-full py-2 px-2.5 bg-[#0d141e] border border-[#2c3e50] rounded-lg text-white font-medium text-xs focus:outline-none focus:border-[#f1c40f]"
                 >
-                  <option value="Furto de Bicicleta / Veículo">🚲 Furto de Bicicleta / Veículo</option>
-                  <option value="Invasão / Arrombamento">🚨 Invasão / Arrombamento de Imóvel</option>
-                  <option value="Atitude Suspeita / Flagrante">👁️ Atitude Suspeita / Flagrante</option>
-                  <option value="Foco de Queimada / Incêndio">🔥 Foco de Queimada / Incêndio</option>
-                  <option value="Furto Rural de Maquinário / Gado">🌾 Furto Rural de Maquinário / Gado</option>
-                  <option value="Vandalismo / Dano ao Patrimônio">🧱 Vandalismo / Depredação</option>
-                  <option value="Outro Incidente Físico">⚠️ Outro Incidente Físico</option>
+                  <option value="Furto de Maquinário / Trator">🚜 Furto de Maquinário / Trator / Insumos</option>
+                  <option value="Abigeato / Furto de Gado">🐂 Abigeato / Furto de Gado</option>
+                  <option value="Foco de Queimada / Incêndio Florestal">🔥 Foco de Queimada / Incêndio em Palhada</option>
+                  <option value="Invasão de Propriedade / Arrombamento">🚨 Invasão de Propriedade / Galpão</option>
+                  <option value="Furto de Bicicleta / Veículo">🚲 Furto de Veículo / Motocicleta na Fazenda</option>
+                  <option value="Atitude Suspeita em Estrada Rural">👁️ Atitude Suspeita em Estrada Rural</option>
+                  <option value="Vandalismo ou Dano a Cercas">🧱 Vandalismo / Corte de Cercas</option>
+                  <option value="Outro Incidente Rural">⚠️ Outro Incidente Rural</option>
                 </select>
               </div>
 

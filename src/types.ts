@@ -51,15 +51,27 @@ export interface LogEntry {
   tipo?: 'info' | 'alert' | 'success' | 'warn';
 }
 
+export interface RuralEstimativa {
+  dronesCount: number;
+  profissionaisCount: number; // Proporção: 1 profissional a cada 4 drones
+  hasWifi: boolean;
+  wifiTaxaExtra: number;
+  basesCarregamentoCount: number;
+  custoBaseCarregamento: number;
+  taxaManutencaoMensal: number;
+  totalEstimadoMensal: number;
+}
+
 export interface PlanItem {
   id: string;
   name: string;
   price: string;
-  category: 'rural' | 'municipio' | 'privada';
+  category: 'rural' | 'privada';
   area: string;
   dronesCount: number;
   features: string[];
   isFeatured?: boolean;
+  statusNota?: string; // Ex: "Futuramente" ou "Estimativa Técnica"
 }
 
 export interface TeamMember {
@@ -70,3 +82,4 @@ export interface TeamMember {
   bio: string;
   responsibilities: string[];
 }
+
